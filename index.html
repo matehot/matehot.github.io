@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MateHot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- PANTALLA DE CARGA BLANCA CON VIDEO GRANDE -->
+    <div id="loading-screen">
+        <video id="loading-video" autoplay muted>
+            <source src="assets/carga.mp4" type="video/mp4">
+            Tu navegador no soporta el video.
+        </video>
+        <div class="loading-text">CARGANDO...</div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div id="main-content">
+        <!-- Header como el original -->
+        <header>
+            <nav class="navbar">
+                <div class="logo">MATEHOT</div>
+                <div class="creator">L_Adriano</div>
+            </nav>
+        </header>
+
+        <!-- Hero Section como el original -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>BIENVENIDO</h1>
+                <p>EXPERIENCIA MATEHOT</p>
+                <button class="pixel-button" onclick="scrollToCatalog()">EMPEZAR</button>
+            </div>
+        </section>
+
+        <!-- Sección de catálogo -->
+        <section class="section" id="catalogo">
+            <div class="pixel-card">
+                <h2>CATÁLOGO</h2>
+                <div class="pixel-grid">
+                    <!-- AQUÍ ESTÁ EL ÚNICO CAMBIO: lleva a la galería -->
+                    <div class="grid-item" onclick="window.location.href='galeria.html'" style="cursor:pointer;">
+                        <img src="assets/imagen/resolucion1.png" alt="Resolución 1" class="catalog-image">
+                        <div class="resolucion">RESOLUCIÓN 1</div>
+                    </div>
+                    <div class="grid-item">
+                        <img src="assets/imagen/resolucion2.png" alt="Resolución 2" class="catalog-image">
+                        <div class="resolucion">RESOLUCIÓN 2</div>
+                    </div>
+                    <div class="grid-item">
+                        <img src="assets/imagen/resolucion3.png" alt="Resolución 3" class="catalog-image">
+                        <div class="resolucion">RESOLUCIÓN 3</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer simple -->
+        <div class="footer">
+            <div class="footer-text">© 2025 MateHot - Todos los derechos reservados</div>
+            <div class="footer-text">Términos y Condiciones</div>
+        </div>
+    </div>
+
+    <script>
+        function scrollToCatalog() {
+            document.getElementById('catalogo').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            const mainContent = document.getElementById('main-content');
+            
+            setTimeout(function() {
+                loadingScreen.style.opacity = '0';
+                setTimeout(function() {
+                    loadingScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    setTimeout(function() {
+                        mainContent.style.opacity = '1';
+                    }, 50);
+                }, 800);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

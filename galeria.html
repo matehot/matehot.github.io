@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MateHot - Galería</title>
+    <link rel="stylesheet" href="style-galeria.css">
+</head>
+<body>
+
+    <!-- PANTALLA DE CARGA (AHORA SÍ FUNCIONA 100%) -->
+    <div id="loading-screen">
+        <video id="loading-video" autoplay muted loop playsinline>
+            <source src="assets/carga2.mp4" type="video/mp4">
+            Tu navegador no soporta video :( 
+        </video>
+        <div class="loading-text">CARGANDO GALERÍA...</div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div id="main-content">
+        <header>
+            <nav class="navbar">
+                <div class="logo">MATEHOT</div>
+                <div class="creator">L_Adriano</div>
+            </nav>
+        </header>
+
+        <section class="gallery-section">
+            <h1 class="gallery-title">GALERÍA INTERACTIVA</h1>
+            
+            <div class="gallery-container">
+                <button class="nav-arrow left-arrow" onclick="previousImage()">&#10094;</button>
+                
+                <div class="image-container">
+                    <img id="current-image" src="assets/galeria/imagen1.png" alt="Galería">
+                    <div class="image-counter">
+                        <span id="current-number">1</span> / <span id="total-number">7</span>
+                    </div>
+                </div>
+                
+                <button class="nav-arrow right-arrow" onclick="nextImage()">&#10095;</button>
+            </div>
+
+            <div class="controls">
+                <button class="control-button" onclick="toggleFullscreen()">
+                    PANTALLA COMPLETA (F)
+                </button>
+                <button class="control-button" onclick="goToIndex()">
+                    VOLVER AL INICIO
+                </button>
+            </div>
+
+            <div class="thumbnails">
+                <div class="thumbnails-container"></div>
+            </div>
+        </section>
+
+        <div class="footer">
+            <div class="footer-text">© 2025 MateHot - Todos los derechos reservados</div>
+            <div class="footer-text">Presiona F o clic en la imagen → Pantalla completa total</div>
+        </div>
+    </div>
+
+    <script src="script-galeria.js"></script>
+</body>
+</html>
