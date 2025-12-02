@@ -4,10 +4,408 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MateHot</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Carga de fuentes locales -->
+    <style>
+        /* DEFINICIÓN DE FUENTES LOCALES */
+        @font-face {
+            font-family: 'MiFuenteTitulo';
+            src: url('assets/fuentes/titulo.ttf') format('truetype'),
+                 url('assets/fuentes/titulo.woff') format('woff'),
+                 url('assets/fuentes/titulo.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'MiFuenteSubtitulo';
+            src: url('assets/fuentes/subtitulo.otf') format('opentype'),
+                 url('assets/fuentes/subtitulo.woff') format('woff'),
+                 url('assets/fuentes/subtitulo.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'MiFuenteNormal';
+            src: url('assets/fuentes/normal.ttf') format('truetype'),
+                 url('assets/fuentes/normal.woff') format('woff'),
+                 url('assets/fuentes/normal.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'MiFuenteNormal', Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* PANTALLA DE CARGA */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease;
+        }
+
+        #loading-video {
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .loading-text {
+            font-family: 'MiFuenteNormal', Arial, sans-serif;
+            font-size: 24px;
+            margin-top: 30px;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        /* Contenido principal */
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        /* HEADER FIJADO QUE NO SE MUEVE */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* NAVBAR FIJADA */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-size: 28px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .creator {
+            font-family: 'MiFuenteNormal', 'Share Tech Mono', monospace;
+            font-size: 16px;
+            color: #888;
+        }
+
+        /* BANNER - ENCIMA DEL CONTENIDO */
+        .banner-hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .banner-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        /* CONTENIDO SOBRE EL BANNER */
+        .hero-content-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 100px; /* Espacio para la navbar fija */
+        }
+
+        /* BIENVENIDO GRANDE CON ANIMACIÓN DE LUCES/GLITCH */
+        .hero-content-overlay h1 {
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-size: 72px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+            animation: glitchEffect 3s infinite alternate;
+        }
+
+        /* ANIMACIÓN GLITCH/LUCES PARA EL TÍTULO */
+        @keyframes glitchEffect {
+            0% {
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8),
+                            0 0 20px rgba(255, 255, 255, 0.3);
+            }
+            25% {
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8),
+                            0 0 30px rgba(0, 255, 0, 0.5),
+                            0 0 40px rgba(0, 255, 0, 0.3);
+                transform: translate(1px, -1px);
+            }
+            50% {
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8),
+                            0 0 25px rgba(255, 0, 255, 0.5),
+                            0 0 35px rgba(255, 0, 255, 0.3);
+                transform: translate(-1px, 1px);
+            }
+            75% {
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8),
+                            0 0 30px rgba(0, 200, 255, 0.5),
+                            0 0 40px rgba(0, 200, 255, 0.3);
+                transform: translate(0.5px, -0.5px);
+            }
+            100% {
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8),
+                            0 0 20px rgba(255, 255, 255, 0.3);
+                transform: translate(0, 0);
+            }
+        }
+
+        /* MÁQUINA DE ESCRIBIR SOBRE EL BANNER */
+        .typewriter-container {
+            height: 40px;
+            margin: 20px 0;
+            font-family: 'MiFuenteSubtitulo', 'Orbitron', sans-serif;
+            font-size: 24px;
+            color: #00ff00;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden;
+            border-right: 2px solid #00ff00;
+            white-space: nowrap;
+            animation: typing 3.5s steps(30, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ff00 }
+        }
+
+        /* TEXTO RIKOLINO */
+        .hero-content-overlay .rikolino {
+            font-family: 'MiFuenteNormal', 'Share Tech Mono', monospace;
+            font-size: 28px;
+            color: #ffffff;
+            margin: 20px 0 40px 0;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        /* BOTÓN SOBRE EL BANNER */
+        .hero-content-overlay .pixel-button {
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            padding: 20px 50px;
+            font-size: 20px;
+            cursor: pointer;
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 20px;
+            text-transform: uppercase;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-content-overlay .pixel-button:hover {
+            background-color: #00cc00;
+            transform: scale(1.05);
+            animation: none;
+        }
+
+        /* ESPACIO PARA LA NAVBAR FIJADA */
+        .spacer {
+            height: 140px; /* Altura de navbar + banner espacio */
+        }
+
+        /* SECCIÓN PROYECTOS (antes catálogo) */
+        .section {
+            padding: 60px 40px;
+            background: #111;
+        }
+
+        .pixel-card {
+            background: #222;
+            border: 2px solid #333;
+            border-radius: 5px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* TÍTULO PROYECTOS CON ANIMACIÓN */
+        .pixel-card h2 {
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-size: 42px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            animation: neonGlow 2s ease-in-out infinite alternate;
+        }
+
+        /* ANIMACIÓN NEÓN PARA "PROYECTOS" */
+        @keyframes neonGlow {
+            from {
+                text-shadow: 0 0 5px #fff,
+                           0 0 10px #fff,
+                           0 0 15px #00ff00,
+                           0 0 20px #00ff00,
+                           0 0 25px #00ff00,
+                           0 0 30px #00ff00,
+                           0 0 35px #00ff00;
+            }
+            to {
+                text-shadow: 0 0 10px #fff,
+                           0 0 20px #00ff00,
+                           0 0 30px #00ff00,
+                           0 0 40px #00ff00,
+                           0 0 50px #00ff00,
+                           0 0 60px #00ff00,
+                           0 0 70px #00ff00;
+            }
+        }
+
+        .pixel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .grid-item {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-10px);
+            border-color: #00ff00;
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .catalog-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+
+        .grid-item:hover .catalog-image {
+            transform: scale(1.05);
+        }
+
+        .resolucion {
+            font-family: 'MiFuenteSubtitulo', 'Orbitron', sans-serif;
+            font-size: 20px;
+            color: #00ff00;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            padding: 30px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-text {
+            color: #888;
+            font-size: 14px;
+            font-family: 'MiFuenteNormal', 'Share Tech Mono', monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content-overlay h1 {
+                font-size: 48px;
+            }
+            
+            .typewriter-container {
+                font-size: 18px;
+            }
+            
+            .hero-content-overlay .rikolino {
+                font-size: 22px;
+            }
+            
+            .hero-content-overlay .pixel-button {
+                padding: 15px 30px;
+                font-size: 18px;
+            }
+            
+            .pixel-card h2 {
+                font-size: 32px;
+            }
+            
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .logo {
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- PANTALLA DE CARGA BLANCA CON VIDEO GRANDE -->
+    <!-- PANTALLA DE CARGA -->
     <div id="loading-screen">
         <video id="loading-video" autoplay muted>
             <source src="assets/carga.mp4" type="video/mp4">
@@ -18,7 +416,7 @@
 
     <!-- Contenido principal -->
     <div id="main-content">
-        <!-- Header como el original -->
+        <!-- HEADER FIJADO -->
         <header>
             <nav class="navbar">
                 <div class="logo">MATEHOT</div>
@@ -26,38 +424,49 @@
             </nav>
         </header>
 
-        <!-- Hero Section como el original -->
-        <section class="hero">
-            <div class="hero-content">
+        <!-- BANNER CON CONTENIDO ENCIMA -->
+        <div class="banner-hero">
+            <img src="assets/banner/banner.png" alt="Banner MateHot">
+            
+            <!-- CONTENIDO SOBRE EL BANNER -->
+            <div class="hero-content-overlay">
                 <h1>BIENVENIDO</h1>
-                <p>EXPERIENCIA MATEHOT</p>
-                <button class="pixel-button" onclick="scrollToCatalog()">EMPEZAR</button>
+                
+                <!-- MÁQUINA DE ESCRIBIR -->
+                <div class="typewriter-container">
+                    <span id="typewriter" class="typewriter-text"></span>
+                </div>
+                
+                <div class="rikolino">Rikolino</div>
+                <button class="pixel-button" onclick="scrollToProyectos()">Bajar</button>
             </div>
-        </section>
+        </div>
 
-        <!-- Sección de catálogo -->
-        <section class="section" id="catalogo">
+        <!-- Espacio para compensar la navbar fija -->
+        <div class="spacer"></div>
+
+        <!-- Sección de PROYECTOS (antes catálogo) -->
+        <section class="section" id="proyectos">
             <div class="pixel-card">
-                <h2>CATÁLOGO</h2>
+                <h2>PROYECTOS</h2>
                 <div class="pixel-grid">
-                    <!-- AQUÍ ESTÁ EL ÚNICO CAMBIO: lleva a la galería -->
                     <div class="grid-item" onclick="window.location.href='galeria.html'" style="cursor:pointer;">
-                        <img src="assets/imagen/resolucion1.png" alt="Resolución 1" class="catalog-image">
-                        <div class="resolucion">RESOLUCIÓN 1</div>
+                        <img src="assets/imagen/resolucion1.png" alt="Proyecto 1" class="catalog-image">
+                        <div class="resolucion">1</div>
                     </div>
-                    <div class="grid-item">
-                        <img src="assets/imagen/resolucion2.png" alt="Resolución 2" class="catalog-image">
-                        <div class="resolucion">RESOLUCIÓN 2</div>
+                    <div class="grid-item" onclick="window.location.href='galeria.html'" style="cursor:pointer;">
+                        <img src="assets/imagen/resolucion2.png" alt="Proyecto 2" class="catalog-image">
+                        <div class="resolucion">2</div>
                     </div>
-                    <div class="grid-item">
-                        <img src="assets/imagen/resolucion3.png" alt="Resolución 3" class="catalog-image">
-                        <div class="resolucion">RESOLUCIÓN 3</div>
+                    <div class="grid-item" onclick="window.location.href='galeria.html'" style="cursor:pointer;">
+                        <img src="assets/imagen/resolucion3.png" alt="Proyecto 3" class="catalog-image">
+                        <div class="resolucion">3</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer simple -->
+        <!-- Footer -->
         <div class="footer">
             <div class="footer-text">© 2025 MateHot - Todos los derechos reservados</div>
             <div class="footer-text">Términos y Condiciones</div>
@@ -65,8 +474,62 @@
     </div>
 
     <script>
-        function scrollToCatalog() {
-            document.getElementById('catalogo').scrollIntoView({
+        // Lista de 8 frases para la máquina de escribir
+        const phrases = [
+            ".................",
+            "Resolviendo problemas, creando soluciones",
+            "La fórmula del éxito está aquí",
+            "Matemáticas siempren dice que es facil",
+            "Pero la verdad es muy dificil",
+            "Capaz desapruebe Mate",
+            "Al menos quiero Dejar algo ",
+            "Y demostrar que no soy malo para las Mate"
+        ];
+        
+        let currentPhrase = 0;
+        let currentChar = 0;
+        let isDeleting = false;
+        let isEnd = false;
+        
+        function typeWriterEffect() {
+            const element = document.getElementById('typewriter');
+            const current = phrases[currentPhrase];
+            
+            if (isDeleting) {
+                // Borrando
+                element.textContent = current.substring(0, currentChar - 1);
+                currentChar--;
+                
+                if (currentChar === 0) {
+                    isDeleting = false;
+                    currentPhrase = (currentPhrase + 1) % phrases.length;
+                }
+            } else {
+                // Escribiendo
+                element.textContent = current.substring(0, currentChar + 1);
+                currentChar++;
+                
+                if (currentChar === current.length) {
+                    isEnd = true;
+                }
+            }
+            
+            // Velocidad de escritura/borrado
+            let speed = isDeleting ? 50 : 100;
+            
+            // Pausa al final de cada frase
+            if (isEnd) {
+                speed = 2000; // 2 segundos de pausa
+                isEnd = false;
+                isDeleting = true;
+            }
+            
+            setTimeout(typeWriterEffect, speed);
+        }
+        
+        // FUNCIÓN CORREGIDA PARA BAJAR A PROYECTOS
+        function scrollToProyectos() {
+            document.getElementById('proyectos').scrollIntoView({
                 behavior: 'smooth'
             });
         }
@@ -75,6 +538,10 @@
             const loadingScreen = document.getElementById('loading-screen');
             const mainContent = document.getElementById('main-content');
             
+            // Iniciar efecto de máquina de escribir
+            setTimeout(typeWriterEffect, 100);
+            
+            // Pantalla de carga
             setTimeout(function() {
                 loadingScreen.style.opacity = '0';
                 setTimeout(function() {
@@ -85,6 +552,18 @@
                     }, 50);
                 }, 800);
             }, 5000);
+            
+            // Hacer que la navbar se quede fija al hacer scroll
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 100) {
+                    navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.98)';
+                    navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.5)';
+                } else {
+                    navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
+                    navbar.style.boxShadow = 'none';
+                }
+            });
         });
     </script>
 </body>
