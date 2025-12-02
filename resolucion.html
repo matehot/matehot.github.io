@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resoluciones - MateHot</title>
+    <style>
+        @font-face {
+            font-family: 'MiFuenteTitulo';
+            src: url('assets/fuentes/titulo.ttf') format('truetype'),
+                 url('assets/fuentes/titulo.woff') format('woff'),
+                 url('assets/fuentes/titulo.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'MiFuenteSubtitulo';
+            src: url('assets/fuentes/subtitulo.otf') format('opentype'),
+                 url('assets/fuentes/subtitulo.woff') format('woff'),
+                 url('assets/fuentes/subtitulo.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'MiFuenteNormal';
+            src: url('assets/fuentes/normal.ttf') format('truetype'),
+                 url('assets/fuentes/normal.woff') format('woff'),
+                 url('assets/fuentes/normal.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'MiFuenteNormal', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #001100 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* PANTALLA DE CARGA - VIDEO CONTAINER PARA AJUSTAR */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CONTENEDOR DEL VIDEO PARA CENTRARLO Y RECORTAR */
+        .video-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* VIDEO OCUPA TODO Y SE CENTRA - NO SE RECORTA */
+        #loading-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* CAMBIADO: Ahora se ve completo sin recortar */
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* EFECTO DE BRILO EN LOS BORDES DEL VIDEO */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
+            pointer-events: none;
+        }
+
+        /* Contenido principal */
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        /* HEADER MEJORADO */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(0,20,0,0.85) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #00ff00;
+            box-shadow: 0 5px 25px rgba(0, 255, 0, 0.2);
+        }
+
+        /* NAVBAR MEJORADA */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-size: 28px;
+            color: #00ff00;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            text-shadow: 0 0 10px #00ff00;
+            transition: all 0.3s;
+        }
+
+        .logo:hover {
+            text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00;
+            transform: scale(1.05);
+        }
+
+        .creator {
+            font-family: 'MiFuenteNormal', 'Share Tech Mono', monospace;
+            font-size: 16px;
+            color: #88ff88;
+            background: rgba(0, 30, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #00ff00;
+        }
+
+        /* BOTÓN VOLVER MEJORADO */
+        .back-button {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            color: #000;
+            border: none;
+            padding: 12px 28px;
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 25px;
+            transition: all 0.3s;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 0, 0.5);
+            background: linear-gradient(45deg, #00ff00, #00ff88);
+        }
+
+        /* CARRUSEL MEJORADO */
+        .gallery-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 20px 80px;
+            background: radial-gradient(circle at 50% 30%, rgba(0, 30, 0, 0.3) 0%, transparent 70%);
+        }
+
+        .gallery-title {
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-size: 48px;
+            color: #00ff00;
+            margin-bottom: 40px;
+            text-align: center;
+            animation: neonGlow 2s infinite alternate;
+            padding: 20px 40px;
+            background: rgba(0, 20, 0, 0.6);
+            border-radius: 15px;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-title::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, #00ff88, #00ff00);
+            border-radius: 15px;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.5;
+        }
+
+        @keyframes neonGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.4),
+                          0 0 40px rgba(0, 255, 0, 0.2),
+                          0 0 60px rgba(0, 255, 0, 0.1);
+            }
+            100% {
+                box-shadow: 0 0 30px rgba(0, 255, 0, 0.6),
+                          0 0 60px rgba(0, 255, 0, 0.4),
+                          0 0 90px rgba(0, 255, 0, 0.2);
+            }
+        }
+
+        .gallery-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 95%;
+            max-width: 1300px;
+            margin: 0 auto 30px;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ff00;
+            background: #000;
+        }
+
+        #current-image {
+            width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            display: block;
+            background: #000;
+        }
+
+        .image-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #00ff00;
+            padding: 12px 22px;
+            font-family: 'MiFuenteSubtitulo', 'Orbitron', sans-serif;
+            font-size: 22px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .resolution-name {
+            font-family: 'MiFuenteSubtitulo', 'Orbitron', sans-serif;
+            font-size: 26px;
+            color: #00ff00;
+            margin-top: 25px;
+            text-align: center;
+            padding: 15px 30px;
+            background: rgba(0, 20, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.2);
+            animation: textGlow 3s infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { opacity: 0.9; }
+            100% { opacity: 1; }
+        }
+
+        /* FLECHAS MEJORADAS */
+        .nav-arrow {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            color: #000;
+            border: none;
+            font-size: 40px;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            margin: 0 40px;
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-arrow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-arrow:hover::before {
+            left: 100%;
+        }
+
+        .nav-arrow:hover {
+            transform: scale(1.15);
+            box-shadow: 0 15px 35px rgba(0, 255, 0, 0.5);
+            background: linear-gradient(45deg, #00ff00, #88ff88);
+        }
+
+        /* CONTROLES MEJORADOS */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            color: #000;
+            border: none;
+            padding: 20px 45px;
+            font-family: 'MiFuenteTitulo', 'Press Start 2P', cursive;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .control-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .control-button:hover::after {
+            left: 100%;
+        }
+
+        .control-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 255, 0, 0.5);
+            background: linear-gradient(45deg, #00ff00, #88ff88);
+        }
+
+        /* MINIATURAS MEJORADAS */
+        .thumbnails {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 1300px;
+            padding: 0 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .thumbnails-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 25px;
+            background: rgba(0, 20, 0, 0.3);
+            border-radius: 15px;
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .thumbnail {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border: 3px solid #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 8px;
+            filter: brightness(0.8);
+        }
+
+        .thumbnail:hover {
+            border-color: #00ff00;
+            transform: scale(1.2) translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.4);
+            filter: brightness(1.2);
+            z-index: 5;
+        }
+
+        .thumbnail.active {
+            border-color: #00ff00;
+            transform: scale(1.15);
+            box-shadow: 0 0 25px #00ff00;
+            filter: brightness(1.3);
+            border-width: 4px;
+        }
+
+        /* FOOTER MEJORADO */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 20, 0, 0.95) 100%);
+            padding: 20px;
+            border-top: 2px solid #00ff00;
+            text-align: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -5px 25px rgba(0, 255, 0, 0.2);
+        }
+
+        .footer-text {
+            color: #88ff88;
+            font-size: 16px;
+            font-family: 'MiFuenteNormal', 'Share Tech Mono', monospace;
+            margin: 8px 0;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .shortcuts {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .shortcut-item {
+            background: rgba(0, 30, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #00ff00;
+            font-size: 14px;
+            color: #00ff00;
+        }
+
+        /* FULLSCREEN */
+        .true-fullscreen #current-image {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%);
+            max-width: 98vw !important;
+            max-height: 98vh !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            border: none !important;
+            z-index: 999999;
+            background: #000;
+            box-shadow: 0 0 100px rgba(0, 255, 0, 0.5);
+        }
+
+        .true-fullscreen header,
+        .true-fullscreen .gallery-title,
+        .true-fullscreen .controls,
+        .true-fullscreen .thumbnails,
+        .true-fullscreen .footer,
+        .true-fullscreen .nav-arrow,
+        .true-fullscreen .image-counter,
+        .true-fullscreen .resolution-name {
+            display: none !important;
+        }
+
+        /* RESPONSIVE MEJORADO */
+        @media (max-width: 1200px) {
+            .gallery-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-arrow {
+                margin: 20px 0;
+                width: 60px;
+                height: 60px;
+                font-size: 35px;
+            }
+            
+            .image-container {
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery-title {
+                font-size: 32px;
+                padding: 15px 25px;
+            }
+            
+            .resolution-name {
+                font-size: 20px;
+                padding: 12px 20px;
+            }
+            
+            .control-button {
+                padding: 15px 30px;
+                font-size: 16px;
+                min-width: 200px;
+            }
+            
+            .thumbnail {
+                width: 90px;
+                height: 70px;
+            }
+            
+            .navbar {
+                padding: 12px 20px;
+            }
+            
+            .logo {
+                font-size: 22px;
+            }
+            
+            .back-button {
+                padding: 10px 20px;
+                margin-right: 15px;
+            }
+            
+            .image-counter {
+                font-size: 18px;
+                padding: 10px 18px;
+                min-width: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-title {
+                font-size: 24px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .nav-arrow {
+                width: 50px;
+                height: 50px;
+                font-size: 30px;
+            }
+            
+            .thumbnails-container {
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .thumbnail {
+                width: 70px;
+                height: 55px;
+            }
+            
+            .footer-text {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PANTALLA DE CARGA - VIDEO CON CONTENEDOR PARA AJUSTE -->
+    <div id="loading-screen">
+        <div class="video-container">
+            <video id="loading-video" autoplay muted playsinline>
+                <source src="assets/carga3.mp4" type="video/mp4">
+                Tu navegador no soporta el video.
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div id="main-content">
+        <!-- HEADER -->
+        <header>
+            <nav class="navbar">
+                <div style="display: flex; align-items: center;">
+                    <button class="back-button" onclick="window.location.href='index.html'">← VOLVER</button>
+                    <div class="logo" onclick="window.location.href='index.html'">MATEHOT</div>
+                </div>
+                <div class="creator">by L_Adriano</div>
+            </nav>
+        </header>
+
+        <!-- CARRUSEL -->
+        <section class="gallery-section">
+            <h1 class="gallery-title">RESOLUCION Ficha 5</h1>
+            
+            <div class="gallery-container">
+                <button class="nav-arrow left-arrow" onclick="previousImage()" aria-label="Imagen anterior">
+                    &#10094;
+                </button>
+                
+                <div class="image-container">
+                    <img id="current-image" src="assets/imagen/resolucion1.png" alt="Resolución">
+                    <div class="image-counter">
+                        <span id="current-number">1</span> / <span id="total-number">14</span>
+                    </div>
+                </div>
+                
+                <button class="nav-arrow right-arrow" onclick="nextImage()" aria-label="Siguiente imagen">
+                    &#10095;
+                </button>
+            </div>
+
+            <div class="resolution-name" id="resolution-title">Resolución 1: Ecuación cuadrática</div>
+
+            <div class="controls">
+                <button class="control-button" onclick="toggleFullscreen()">
+                    PANTALLA COMPLETA (F)
+                </button>
+                <button class="control-button" onclick="window.location.href='galeria.html'">
+                    VER GALERÍA COMPLETA
+                </button>
+            </div>
+
+            <div class="thumbnails">
+                <div class="thumbnails-container" id="thumbnails-container">
+                    <!-- Miniaturas se generan con JS -->
+                </div>
+            </div>
+        </section>
+
+        <div class="footer">
+            <div class="footer-text">© 2025 MateHot - Todos los derechos reservados</div>
+            <div class="shortcuts">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const resolutions = [
+            { id: 1, name: "Resolución 1: Ecuación cuadrática", image: "assets/imagen/resolucion1.png" },
+            { id: 2, name: "Resolución 2: Teorema de Pitágoras", image: "assets/imagen/resolucion2.png" },
+            { id: 3, name: "Resolución 3: Cálculo diferencial", image: "assets/imagen/resolucion3.png" },
+            { id: 4, name: "Resolución 4: Álgebra lineal", image: "assets/imagen/resolucion4.png" },
+            { id: 5, name: "Resolución 5: Geometría analítica", image: "assets/imagen/resolucion5.png" },
+            { id: 6, name: "Resolución 6: Trigonometría", image: "assets/imagen/resolucion6.png" },
+            { id: 7, name: "Resolución 7: Cálculo integral", image: "assets/imagen/resolucion7.png" },
+            { id: 8, name: "Resolución 8: Límites y continuidad", image: "assets/imagen/resolucion8.png" },
+            { id: 9, name: "Resolución 9: Derivadas parciales", image: "assets/imagen/resolucion9.png" },
+            { id: 10, name: "Resolución 10: Ecuaciones diferenciales", image: "assets/imagen/resolucion10.png" },
+            { id: 11, name: "Resolución 11: Análisis complejo", image: "assets/imagen/resolucion11.png" },
+            { id: 12, name: "Resolución 12: Estadística avanzada", image: "assets/imagen/resolucion12.png" },
+            { id: 13, name: "Resolución 13: Probabilidad", image: "assets/imagen/resolucion13.png" },
+            { id: 14, name: "Resolución 14: Optimización", image: "assets/imagen/resolucion14.png" }
+        ];
+
+        let currentIndex = 0;
+        const currentImage = document.getElementById('current-image');
+        const currentNumber = document.getElementById('current-number');
+        const totalNumber = document.getElementById('total-number');
+        const resolutionTitle = document.getElementById('resolution-title');
+        const thumbnailsContainer = document.getElementById('thumbnails-container');
+
+        function initGallery() {
+            totalNumber.textContent = resolutions.length;
+            updateImage();
+            createThumbnails();
+            document.addEventListener('keydown', handleKeyPress);
+            currentImage.addEventListener('click', toggleFullscreen);
+            
+            // Preload imágenes para mejor experiencia
+            resolutions.forEach(res => {
+                const img = new Image();
+                img.src = res.image;
+            });
+        }
+
+        function updateImage() {
+            currentImage.style.opacity = '0';
+            setTimeout(() => {
+                currentImage.src = resolutions[currentIndex].image;
+                resolutionTitle.textContent = resolutions[currentIndex].name;
+                currentNumber.textContent = currentIndex + 1;
+                currentImage.style.opacity = '1';
+                updateThumbnails();
+            }, 200);
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % resolutions.length;
+            updateImage();
+        }
+
+        function previousImage() {
+            currentIndex = (currentIndex - 1 + resolutions.length) % resolutions.length;
+            updateImage();
+        }
+
+        function createThumbnails() {
+            thumbnailsContainer.innerHTML = '';
+            resolutions.forEach((res, i) => {
+                const thumb = document.createElement('img');
+                thumb.src = res.image;
+                thumb.className = 'thumbnail';
+                thumb.alt = `Miniatura ${i + 1}`;
+                thumb.loading = 'lazy';
+                
+                if (i === 0) thumb.classList.add('active');
+                
+                thumb.addEventListener('click', () => {
+                    currentIndex = i;
+                    updateImage();
+                    
+                    // Scroll suave a la miniatura
+                    thumb.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center'
+                    });
+                });
+                
+                thumbnailsContainer.appendChild(thumb);
+            });
+        }
+
+        function updateThumbnails() {
+            document.querySelectorAll('.thumbnail').forEach((t, i) => {
+                t.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen?.() ||
+                document.documentElement.webkitRequestFullscreen?.() ||
+                document.documentElement.msRequestFullscreen?.();
+            } else {
+                document.exitFullscreen?.() ||
+                document.webkitExitFullscreen?.() ||
+                document.msExitFullscreen?.();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            document.body.classList.toggle('true-fullscreen', !!document.fullscreenElement);
+        });
+
+        function handleKeyPress(e) {
+            if (e.key === 'f' || e.key === 'F') {
+                toggleFullscreen();
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowRight' || e.key === ' ') nextImage();
+            if (e.key === 'ArrowLeft') previousImage();
+            if (e.key >= '1' && e.key <= '9') {
+                const num = parseInt(e.key);
+                if (num <= resolutions.length) {
+                    currentIndex = num - 1;
+                    updateImage();
+                }
+            }
+        }
+
+        // PANTALLA DE CARGA MEJORADA
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            const mainContent = document.getElementById('main-content');
+            const video = document.getElementById('loading-video');
+            
+            // Asegurar que el video se vea completo
+            video.style.objectFit = 'contain';
+            video.style.maxWidth = '100%';
+            video.style.maxHeight = '100%';
+            
+            // Forzar reproducción
+            video.play().catch(e => {
+                console.log("Video autoplay bloqueado, mostrando de todas formas");
+                video.style.display = 'block';
+            });
+            
+            // 5 SEGUNDOS EXACTOS
+            setTimeout(function() {
+                loadingScreen.style.opacity = '0';
+                setTimeout(function() {
+                    loadingScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    setTimeout(function() {
+                        mainContent.style.opacity = '1';
+                        initGallery();
+                        
+                        // Efecto de entrada
+                        document.querySelector('.gallery-section').style.animation = 'none';
+                        setTimeout(() => {
+                            document.querySelector('.gallery-section').style.animation = 'fadeIn 1s ease';
+                        }, 10);
+                    }, 50);
+                }, 800);
+            }, 5000);
+        });
+
+        // NAVBAR CON EFECTO
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('header');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(0,30,0,0.95) 100%)';
+                navbar.style.boxShadow = '0 8px 30px rgba(0, 255, 0, 0.3)';
+            } else {
+                navbar.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(0,20,0,0.85) 100%)';
+                navbar.style.boxShadow = '0 5px 25px rgba(0, 255, 0, 0.2)';
+            }
+        });
+    </script>
+</body>
+</html>
