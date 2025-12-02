@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Imagen - MateHot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #001100 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .back-button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            align-self: flex-start;
+        }
+
+        .back-button:hover {
+            background: #00cc00;
+            transform: scale(1.05);
+        }
+
+        h1 {
+            color: #00ff00;
+            margin-bottom: 20px;
+            font-size: 32px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .instructions {
+            color: #88ff88;
+            margin-bottom: 30px;
+            font-size: 18px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .image-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: #000;
+        }
+
+        .image-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
+        }
+
+        #fullscreen-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        /* ESTILOS PARA PANTALLA COMPLETA */
+        .fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .fullscreen-image {
+            max-width: 95%;
+            max-height: 90vh;
+            object-fit: contain;
+            cursor: zoom-out;
+            border: 3px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
+        }
+
+        .close-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #00ff00;
+            color: #000;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .close-button:hover {
+            background: #ff0000;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .zoom-text {
+            position: fixed;
+            bottom: 20px;
+            color: #88ff88;
+            font-size: 16px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #00ff00;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* EFECTO DE ENTRADA */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container > * {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+            }
+            
+            .instructions {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+            
+            .image-container {
+                border-width: 2px;
+            }
+            
+            .close-button {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .zoom-text {
+                font-size: 14px;
+                bottom: 15px;
+                padding: 8px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .back-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .instructions {
+                font-size: 14px;
+            }
+            
+            .fullscreen-image {
+                max-width: 98%;
+                max-height: 85vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="window.location.href='index.html'">← Volver al Inicio</button>
+        
+        <h1>IMAGEN COMPLETA</h1>
+        
+        <p class="instructions">
+            Haz clic en la imagen para verla en pantalla completa. <br>
+            Haz clic nuevamente o presiona ESC para salir.
+        </p>
+        
+        <div class="image-container" id="image-container">
+            <img id="fullscreen-image" src="assets/imagen/me.png" alt="Imagen especial">
+        </div>
+        
+        <footer>
+            © 2025 MateHot - Imagen exclusiva
+        </footer>
+    </div>
+
+    <script>
+        const imageContainer = document.getElementById('image-container');
+        const fullscreenImage = document.getElementById('fullscreen-image');
+        let isFullscreen = false;
+
+        // Función para entrar en pantalla completa
+        function enterFullscreen() {
+            if (isFullscreen) return;
+            
+            isFullscreen = true;
+            
+            // Crear contenedor de pantalla completa
+            const fullscreenContainer = document.createElement('div');
+            fullscreenContainer.className = 'fullscreen-mode';
+            fullscreenContainer.id = 'fullscreen-container';
+            
+            // Crear botón de cerrar
+            const closeButton = document.createElement('button');
+            closeButton.className = 'close-button';
+            closeButton.innerHTML = '×';
+            closeButton.onclick = exitFullscreen;
+            
+            // Crear imagen en pantalla completa
+            const fullscreenImg = document.createElement('img');
+            fullscreenImg.className = 'fullscreen-image';
+            fullscreenImg.src = fullscreenImage.src;
+            fullscreenImg.alt = 'Imagen en pantalla completa';
+            fullscreenImg.onclick = exitFullscreen;
+            
+            // Crear texto de ayuda
+            const helpText = document.createElement('div');
+            helpText.className = 'zoom-text';
+            helpText.innerHTML = 'Haz clic en cualquier lugar o presiona ESC para salir';
+            
+            // Añadir elementos al contenedor
+            fullscreenContainer.appendChild(closeButton);
+            fullscreenContainer.appendChild(fullscreenImg);
+            fullscreenContainer.appendChild(helpText);
+            
+            // Añadir al body
+            document.body.appendChild(fullscreenContainer);
+            
+            // Deshabilitar scroll del body
+            document.body.style.overflow = 'hidden';
+            
+            // Escuchar tecla ESC
+            document.addEventListener('keydown', handleEscKey);
+        }
+
+        // Función para salir de pantalla completa
+        function exitFullscreen() {
+            if (!isFullscreen) return;
+            
+            isFullscreen = false;
+            
+            // Remover contenedor de pantalla completa
+            const fullscreenContainer = document.getElementById('fullscreen-container');
+            if (fullscreenContainer) {
+                fullscreenContainer.remove();
+            }
+            
+            // Habilitar scroll del body
+            document.body.style.overflow = 'auto';
+            
+            // Remover listener de tecla ESC
+            document.removeEventListener('keydown', handleEscKey);
+        }
+
+        // Manejar tecla ESC
+        function handleEscKey(event) {
+            if (event.key === 'Escape') {
+                exitFullscreen();
+            }
+        }
+
+        // Evento clic en la imagen
+        imageContainer.addEventListener('click', enterFullscreen);
+        fullscreenImage.addEventListener('click', enterFullscreen);
+
+        // Precargar imagen para mejor experiencia
+        window.addEventListener('load', function() {
+            const img = new Image();
+            img.src = fullscreenImage.src;
+            
+            // Efecto de entrada suave
+            setTimeout(() => {
+                imageContainer.style.opacity = '1';
+                imageContainer.style.transform = 'scale(1)';
+            }, 300);
+        });
+
+        // También permitir pantalla completa nativa con F11
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'F11') {
+                event.preventDefault();
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
